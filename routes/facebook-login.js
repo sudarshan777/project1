@@ -26,7 +26,8 @@ passport.use(
     },
     function (accessToken, refreshToken, profile, done) {
       const { email, first_name, last_name } = profile._json;
-      //console.log(JSON.stringify(profile));
+      const picture = `https://graph.facebook.com/${profile.id}/picture?width=200&height=200&access_token=${accessToken}`;
+      console.log(picture);
       const userData = {
         name: first_name + " " + last_name,
         email: email,
@@ -37,7 +38,10 @@ passport.use(
   )
 );
 
-router.get("/authenticate/facebook", passport.authenticate("facebook"));
+router.get(
+  "/authenticate/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
 
 router.get(
   "/authenticate/facebook/callback",
