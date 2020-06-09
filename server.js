@@ -37,6 +37,9 @@ app.use("/auth", authRouter);
 const facebookRouter = require("./routes/facebook-login");
 app.use("/", facebookRouter);
 
+const articleRouter = require("./routes/articles");
+app.use("/articles", articleRouter);
+
 //Starts listening to server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
