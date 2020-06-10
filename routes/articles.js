@@ -4,6 +4,7 @@ const auth = require("../middleware/auth");
 
 router.route("/").get((req, res) => {
   Article.find()
+    .populate("user", "name")
     .then((articles) => res.json(articles))
     .catch((err) => res.status(400).json("Error: " + err));
 });
@@ -27,6 +28,14 @@ router.post("/add", (req, res) => {
 
 router.get("/:id", (req, res) => {
   Article.findById(req.params.id)
+    .populate("user", "name")
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "name",
+      },
+    })
     .then((article) => res.json(article))
     .catch((err) => res.status(400).json("Error: " + err));
 });
@@ -54,8 +63,8 @@ router.post("/update/:id", (req, res) => {
 router.post("/comment/:id", (req, res) => {
   Article.findById(req.params.id)
     .then((article) => {
-      article.comment.push({
-        body: req.body.comment.body,
+      article.comments.push({
+        body: req.body.body,
         user: req.body.user,
       });
 

@@ -15,6 +15,12 @@ let userSchema = new Schema(
     password: {
       type: String,
     },
+    articles: [
+      {
+        article: { type: Schema.Types.ObjectId, ref: "Article" },
+        date: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true,
