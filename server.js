@@ -24,6 +24,7 @@ mongoose.connect(
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   },
   () => console.log("DB connected!")
 );
@@ -31,9 +32,11 @@ mongoose.connect(
 // Use routes
 const signupRouter = require("./routes/signup");
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 app.use(passport.initialize());
 app.use("/signup", signupRouter);
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 const facebookRouter = require("./routes/facebook-login");
 app.use("/", facebookRouter);
 

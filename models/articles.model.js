@@ -6,7 +6,6 @@ const articleSchema = new Schema(
     title: {
       type: String,
       default: "",
-
       trim: true,
       maxlength: 500,
     },
@@ -16,6 +15,10 @@ const articleSchema = new Schema(
 
       trim: true,
       maxlength: 2000,
+    },
+    likes: {
+      type: Number,
+      default: 0,
     },
     user: { type: Schema.Types.ObjectId, ref: "User" },
     date: { type: Date, default: Date.now },
@@ -31,6 +34,12 @@ const articleSchema = new Schema(
     timestamps: true,
   }
 );
+articleSchema.methods.like = function () {
+  this.likes++;
+  return this.save();
+};
+
+
 
 const Article = mongoose.model("Article", articleSchema);
 
