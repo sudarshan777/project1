@@ -7,14 +7,14 @@ const articleSchema = new Schema(
       type: String,
       default: "",
       trim: true,
-      maxlength: 500,
+      min: 5,
+      max: 100,
     },
     body: {
       type: String,
       default: "",
-
       trim: true,
-      maxlength: 2000,
+      max: 2000,
     },
     likes: {
       type: Number,
@@ -24,8 +24,15 @@ const articleSchema = new Schema(
     date: { type: Date, default: Date.now },
     comments: [
       {
-        body: { type: String, default: "", maxlength: 1000 },
-        user: { type: Schema.Types.ObjectId, ref: "User" },
+        body: {
+          type: String,
+          default: "",
+          max: 1000,
+          trim: true,
+          min: 10,
+          required: true,
+        },
+        user: { type: Schema.Types.ObjectId, ref: "User", required: true },
         date: { type: Date, default: Date.now },
       },
     ],
@@ -38,8 +45,10 @@ articleSchema.methods.like = function () {
   this.likes++;
   return this.save();
 };
-
-
+articleSchema.methods.unlike = function () {
+  this.likes--;
+  return this.save();
+};
 
 const Article = mongoose.model("Article", articleSchema);
 

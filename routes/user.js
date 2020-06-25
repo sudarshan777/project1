@@ -22,7 +22,10 @@ let Article = require("../models/articles.model");
 // @access public
 router.get("/all", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
+    // .populate("articlesWritten")
+    // .populate("following")
+    // .populate("followers");
     res.json(users);
   } catch (error) {
     res.status(400).json({ message: err });
@@ -31,17 +34,69 @@ router.get("/all", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id); //.populate(
-    //   "articlesWritten.article"
-    // );
+    const user = await User.findById(req.params.id)
+      .select("-password")
+      .populate("articlesWritten")
+      .populate("following")
+      .populate("followers")
+      .populate('bookmarks','title');
     //   .populate("commented.article");
-    console.log(user.articlesWritten[0].article);
 
-    const article = await Article.findById(user.articlesWritten[0].article);
-
-    res.json({ user, article });
+    res.json(user);
   } catch (err) {
     res.status(400).json({ message: err });
+  }
+});
+
+
+router.post("/subscribe/:id", async (req, res) => {
+  if (req.body.user === req.params.id) {
+    return res.status(400).json({ msg: "You cannot follow yourself" });
+  }
+  try {
+    await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $addToSet: { following: req.body.user } }
+    );
+
+    await User.findByIdAndUpdate(
+      { _id: req.body.user },
+      { $addToSet: { followers: req.params.id } }
+    );
+
+    res.json("Subscribed!");
+  } catch (error) {
+    res.status(400).json("Error: " + err);
+  }
+});
+router.post("/unsubscribe/:id", async (req, res) => {
+  if (req.body.user === req.params.id) {
+    return res.status(400).json({ msg: "You cannot follow yourself" });
+  }
+  try {
+    await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $pull: { following: req.body.user } }
+    );
+
+    await User.findByIdAndUpdate(
+      { _id: req.body.user },
+      { $pull: { followers: req.params.id } }
+    );
+
+    res.json("UnSubscribed!");
+  } catch (error) {
+    res.status(400).json("Error: " + err);
+  }
+});
+
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json("User Deleted");
+  } catch (err) {
+    res.status(400).json("Error: " + err);
   }
 });
 

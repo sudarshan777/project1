@@ -7,10 +7,8 @@ const mongoose = require("mongoose");
 // fetches all articles
 router.get("/", async (req, res) => {
   try {
-    const articles = await Article.find()
-      .populate("user", "name")
-      .populate("comments.user", "name");
-    res.json({ articles });
+    const articles = await Article.find().populate("user", "name");
+    res.json(articles);
   } catch (err) {
     res.status(400).json("Error: " + err);
   }
@@ -32,11 +30,11 @@ router.post("/add", async (req, res) => {
 
   try {
     article = await newArticle.save();
-    await User.findOneAndUpdate(
+    await User.findByIdAndUpdate(
       { _id: newArticle.user },
-      { $push: { articlesWritten: { article } } }
+      { $push: { articlesWritten: article._id } }
     );
-    res.json({ article });
+    res.json(article);
   } catch (error) {
     res.status(400).json("Error: " + err);
   }
@@ -83,17 +81,40 @@ router.post("/comment/:id", async (req, res) => {
   const id = new mongoose.Types.ObjectId();
   const comment = { _id: id, body: req.body.body, user: req.body.user };
   try {
-    const article = await Article.findOneAndUpdate(
+    const article = await Article.findByIdAndUpdate(
       { _id: req.params.id },
       { $push: { comments: comment } }
     );
 
-    await User.findOneAndUpdate(
+    await User.findByIdAndUpdate(
       { _id: comment.user },
       { $push: { commented: { article, comment: id } } }
     );
-    res.json({ article });
+    // res.json(article );
     res.json("Comment added!");
+  } catch (error) {
+    res.status(400).json("Error: " + err);
+  }
+});
+
+router.post("/bookmark/:id", async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(
+      { _id: req.body.user },
+      { $addToSet: { bookmarks: req.params.id } }
+    );
+    res.json("Bookmark added!");
+  } catch (error) {
+    res.status(400).json("Error: " + err);
+  }
+});
+router.post("/unbookmark/:id", async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(
+      { _id: req.body.user },
+      { $pull: { bookmarks: req.params.id } }
+    );
+    res.json("Bookmark removed!");
   } catch (error) {
     res.status(400).json("Error: " + err);
   }
@@ -102,10 +123,29 @@ router.post("/comment/:id", async (req, res) => {
 router.post("/like/:id", async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
-    article.like();
+    await article.like();
+
+    await User.findByIdAndUpdate(
+      { _id: req.body.user },
+      { $addToSet: { articleLiked: req.params.id } }
+    );
     res.status(201).json({ article });
   } catch (error) {
     res.status(400).json("Error: " + err);
   }
 });
+router.post("/unlike/:id", async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    await article.unlike();
+    await User.findByIdAndUpdate(
+      { _id: req.body.user },
+      { $pull: { articleLiked: req.params.id } }
+    );
+    res.status(201).json({ article });
+  } catch (error) {
+    res.status(400).json("Error: " + err);
+  }
+});
+
 module.exports = router;

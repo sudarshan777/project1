@@ -20,24 +20,22 @@ let userSchema = new Schema(
         type: String,
       },
     ],
-    articlesWritten: [
-      { article: { type: Schema.Types.ObjectId, ref: "Article" } },
-    ],
+    articlesWritten: [{ type: Schema.Types.ObjectId, ref: "Article" }],
     commented: [
       {
         article: { type: Schema.Types.ObjectId, ref: "Article" },
         comment: { type: Schema.Types.Mixed, ref: "Article.comments" },
       },
     ],
-    bookmarks: [{ article: { type: Schema.Types.ObjectId, ref: "Article" } }],
-    following: [{ user: { type: Schema.Types.ObjectId, ref: "User" } }],
+    bookmarks: [{ type: Schema.Types.ObjectId, ref: "Article" }],
+    articleLiked: [{ type: Schema.Types.ObjectId, ref: "Article" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
   }
 );
-
-
 
 // Export the model
 module.exports = mongoose.model("User", userSchema);
