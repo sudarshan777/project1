@@ -32,16 +32,20 @@ mongoose.connect(
 // Use routes
 const signupRouter = require("./routes/signup");
 const authRouter = require("./routes/auth");
-const userRouter = require("./routes/user");
+const userRouter = require("./routes/api/user");
+const facebookRouter = require("./routes/facebook-login");
+const articleRouter = require("./routes/api/articles");
+const likeRouter = require("./routes/api/likes");
+const commentRouter = require("./routes/api/comments");
+
 app.use(passport.initialize());
 app.use("/signup", signupRouter);
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-const facebookRouter = require("./routes/facebook-login");
 app.use("/", facebookRouter);
-
-const articleRouter = require("./routes/articles");
 app.use("/articles", articleRouter);
+app.use("/like", likeRouter);
+app.use("/comments", commentRouter);
 
 //Starts listening to server
 const port = process.env.PORT || 5000;
