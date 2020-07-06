@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
+const { model, Schema } = require("mongoose");
 let userSchema = new Schema(
   {
     name: {
@@ -20,17 +18,20 @@ let userSchema = new Schema(
         type: String,
       },
     ],
-    articlesWritten: [{ type: Schema.Types.ObjectId, ref: "Article" }],
-    commented: [
+    bookmarks: [
       {
-        article: { type: Schema.Types.ObjectId, ref: "Article" },
-        comment: { type: Schema.Types.Mixed, ref: "Article.comments" },
+        type: Schema.Types.ObjectId,
+        ref: "Article",
+        required: true,
+        default: [],
       },
     ],
-    bookmarks: [{ type: Schema.Types.ObjectId, ref: "Article" }],
-    articleLiked: [{ type: Schema.Types.ObjectId, ref: "Article" }],
-    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [
+      { type: Schema.Types.ObjectId, ref: "User", required: true, default: [] },
+    ],
+    followers: [
+      { type: Schema.Types.ObjectId, ref: "User", required: true, default: [] },
+    ],
   },
   {
     timestamps: true,
@@ -38,4 +39,7 @@ let userSchema = new Schema(
 );
 
 // Export the model
-module.exports = mongoose.model("User", userSchema);
+
+const User = model("User", userSchema);
+
+module.exports = User;
