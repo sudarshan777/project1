@@ -43,9 +43,8 @@ router.get("/:id", async (req, res) => {
       "user",
       "name"
     );
-    const Likes = article.likes.length;
-    const Comments = article.comments.length;
-    res.json({ article, Likes, Comments });
+
+    res.json(article);
   } catch (err) {
     res.status(400).json({ message: err });
   }

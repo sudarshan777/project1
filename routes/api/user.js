@@ -35,10 +35,11 @@ router.get("/all", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password");
-    // .populate("following")
-    // .populate("followers");
-    // .populate('bookmarks','title');
+    const user = await User.findById(req.params.id)
+      .select("-password")
+      .populate("following", "name")
+      .populate("followers", "name")
+      .populate("bookmarks", "title");
     //   .populate("commented.article");
 
     res.json(user);
@@ -57,6 +58,18 @@ router.get("/followers/:id", async (req, res) => {
     res.status(400).json({ Error: error });
   }
 });
+
+router.get("/articlesWritten/:id", async (req, res) => {
+  try {
+    const articles = await Article.find({ user: req.params.id }).select(
+      "title"
+    );
+    res.json(articles);
+  } catch (error) {
+    res.status(400).json({ Error: error });
+  }
+});
+
 router.get("/following/:id", async (req, res) => {
   try {
     const following = await User.findById(req.params.id)
