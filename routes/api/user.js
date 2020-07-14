@@ -35,11 +35,10 @@ router.get("/all", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id)
-      .select("-password")
-      .populate("following", "name")
-      .populate("followers", "name")
-      .populate("bookmarks", "title");
+    const user = await User.findById(req.params.id).select("-password");
+    // .populate("following", "name")
+    // .populate("followers", "name")
+    // .populate("bookmarks", "title");
     //   .populate("commented.article");
 
     res.json(user);
@@ -61,8 +60,9 @@ router.get("/followers/:id", async (req, res) => {
 
 router.get("/articlesWritten/:id", async (req, res) => {
   try {
-    const articles = await Article.find({ user: req.params.id }).select(
-      "title"
+    const articles = await Article.find({ user: req.params.id }).populate(
+      "user",
+      "name"
     );
     res.json(articles);
   } catch (error) {
