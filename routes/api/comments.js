@@ -22,6 +22,7 @@ router.get("/get/user/:id", async (req, res) => {
 router.get("/get/article/:id", async (req, res) => {
   try {
     const comments = await Comment.find({ article: req.params.id })
+      .select("-article")
       .populate("user", "name")
       .sort({ createAt: "desc" });
     res.json(comments);
