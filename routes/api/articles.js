@@ -12,9 +12,7 @@ router.get("/", async (req, res) => {
   try {
     const articles = await Article.find()
       .populate("user", "name")
-      .populate("likes", "user article")
-      .populate("comments", "user body")
-      .sort({ date: "desc" });
+      .sort({ createdAt: "desc" });
 
     res.json(articles);
   } catch (err) {
