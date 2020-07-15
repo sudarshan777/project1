@@ -18,6 +18,8 @@ let userSchema = new Schema(
         type: String,
       },
     ],
+    hobbies: [{ type: String }],
+    ratings: { type: Number, max: 5, default: 0 },
     bookmarks: [
       {
         type: Schema.Types.ObjectId,
