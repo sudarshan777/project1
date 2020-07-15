@@ -22,6 +22,7 @@ router.get("/user/all_articles/:id", async (req, res) => {
 router.get("/article/all_users/:id", async (req, res) => {
   try {
     const likes = await Like.find({ article: req.params.id })
+      .select("-article")
       .populate("user", "name")
       .sort({ date: "desc" });
     res.json(likes);
@@ -61,7 +62,6 @@ router.post("/post/article/:id", async (req, res) => {
     }
 
     const like = await Like.findOne({ user: userId, article: articleId });
-    console.log(like);
 
     if (like) {
       await like.deleteOne();
@@ -83,7 +83,7 @@ router.delete("/:id", async (req, res) => {
     const like = await Like.findById(req.params.id);
     if (like) {
       await like.deleteOne();
-      res.json("Article Deleted");
+      res.json("Like Deleted");
     } else {
       return res.json("Like not present");
     }
