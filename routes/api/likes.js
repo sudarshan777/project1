@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 router.get("/user/all_articles/:id", async (req, res) => {
   try {
     const likes = await Like.find({ user: req.params.id })
+      .select("-user")
       .populate("article", "title")
       .sort({ date: "desc" });
 
