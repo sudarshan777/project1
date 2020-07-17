@@ -58,7 +58,7 @@ router.post("/edit/:id", async (req, res) => {
     const comment = await Comment.findById(req.params.id);
     comment.body = req.body.body;
     comment.save();
-    res.json("Comment Edited");
+    res.json(comment);
   } catch (error) {
     res.status(400).json("Error: " + error);
   }
@@ -67,8 +67,8 @@ router.post("/edit/:id", async (req, res) => {
 // Delete comment
 router.delete("/delete/:id", async (req, res) => {
   try {
-    await Comment.findByIdAndDelete(req.params.id);
-    res.json("Comment Deleted");
+    const comment = await Comment.findByIdAndDelete(req.params.id);
+    res.json(comment);
   } catch (err) {
     res.status(400).json("Error: " + err);
   }
