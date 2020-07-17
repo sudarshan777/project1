@@ -31,7 +31,7 @@ router.get("/get/article/:id", async (req, res) => {
   }
 });
 
-router.post("/post/article/:id", async (req, res) => {
+router.post("/post/:id", async (req, res) => {
   const userId = req.body.user;
   const articleId = req.params.id;
 
@@ -53,39 +53,22 @@ router.post("/post/article/:id", async (req, res) => {
 });
 
 // Edit comment
-router.post("/edit/:commentId/user/:userId", async (req, res) => {
+router.post("/edit/:id", async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.commentId);
-    if (comment && comment.user.toString() === req.params.userId) {
-      comment.body = req.body.body;
-      comment.save();
-      res.json("Comment Updated");
-    } else {
-      res.json("Comment not found");
-    }
+    const comment = await Comment.findById(req.params.id);
+    comment.body = req.body.body;
+    comment.save();
+    res.json("Comment Edited");
   } catch (error) {
     res.status(400).json("Error: " + error);
   }
 });
 
 // Delete comment
-router.delete("/delete/:commentId/user/:userId", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   try {
-    const comment = await Comment.findById(req.params.commentId).populate(
-      "article",
-      "user"
-    );
-
-    if (
-      comment &&
-      (comment.user.toString() === req.params.userId ||
-        comment.article.user.toString() === req.params.userId)
-    ) {
-      await comment.deleteOne();
-      res.json("Comment Deleted");
-    } else {
-      return res.json("Comment not present");
-    }
+    await Comment.findByIdAndDelete(req.params.id);
+    res.json("Comment Deleted");
   } catch (err) {
     res.status(400).json("Error: " + err);
   }
