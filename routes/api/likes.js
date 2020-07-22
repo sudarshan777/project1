@@ -72,8 +72,8 @@ router.post("/post/article/:id", async (req, res) => {
         article: articleId,
         user: userId,
       });
-      await newLike.save();
-      res.json("Liked");
+      let savedLike = await newLike.save();
+      res.json(savedLike);
     }
   } catch (error) {
     res.status(400).json("Error: " + error);
