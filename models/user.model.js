@@ -18,9 +18,12 @@ let userSchema = new Schema({
   role: [{
     type: String,
   }, ],
-  hobbies: [{
-    type: String
-  }],
+  hobbies: {
+    type: Array,
+  },
+  skills: {
+    type: Array
+  },
   ratings: {
     type: Number,
     max: 5,
