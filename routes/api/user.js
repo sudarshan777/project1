@@ -196,7 +196,7 @@ router.patch("/:id", async (req, res) => {
       _id: req.params.id
     }, {
       $set: {
-        name: req.body.firstName + req.body.lastName,
+        name: req.body.name,
         email: req.body.email,
         password: req.body.password,
         role: req.body.role,
