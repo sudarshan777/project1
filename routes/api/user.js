@@ -29,7 +29,9 @@ router.get("/all", async (req, res) => {
       .populate("followers", "name");
     res.json(users);
   } catch (error) {
-    res.status(400).json({ message: err });
+    res.status(400).json({
+      message: err
+    });
   }
 });
 
@@ -43,7 +45,9 @@ router.get("/:id", async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    res.status(400).json({ message: err });
+    res.status(400).json({
+      message: err
+    });
   }
 });
 router.get("/followers/:id", async (req, res) => {
@@ -54,19 +58,25 @@ router.get("/followers/:id", async (req, res) => {
 
     res.json(followers);
   } catch (error) {
-    res.status(400).json({ Error: error });
+    res.status(400).json({
+      Error: error
+    });
   }
 });
 
 router.get("/articlesWritten/:id", async (req, res) => {
   try {
-    const articles = await Article.find({ user: req.params.id }).populate(
+    const articles = await Article.find({
+      user: req.params.id
+    }).populate(
       "user",
       "name"
     );
     res.json(articles);
   } catch (error) {
-    res.status(400).json({ Error: error });
+    res.status(400).json({
+      Error: error
+    });
   }
 });
 
@@ -78,7 +88,9 @@ router.get("/following/:id", async (req, res) => {
 
     res.json(following);
   } catch (error) {
-    res.status(400).json({ Error: error });
+    res.status(400).json({
+      Error: error
+    });
   }
 });
 router.get("/bookmarks/:id", async (req, res) => {
@@ -96,10 +108,14 @@ router.post("/:id/follow", async (req, res) => {
   const userId = req.params.id;
   const followUserId = req.body.user;
   if (userId === followUserId) {
-    return res.status(400).json({ msg: "You cannot follow yourself" });
+    return res.status(400).json({
+      msg: "You cannot follow yourself"
+    });
   }
   if (!userId || !followUserId) {
-    return res.status(400).json({ msg: "You are missing data" });
+    return res.status(400).json({
+      msg: "You are missing data"
+    });
   }
 
   try {
@@ -138,7 +154,9 @@ router.post("/bookmark/:id", async (req, res) => {
   const userId = req.params.id;
   const articleId = req.body.articleId;
   if (!userId || !articleId) {
-    return res.status(400).json({ msg: "You are missing data" });
+    return res.status(400).json({
+      msg: "You are missing data"
+    });
   }
 
   try {
@@ -170,5 +188,26 @@ router.delete("/:id", async (req, res) => {
     res.status(400).json("Error: " + err);
   }
 });
+
+
+router.patch("/:id", async (req, res) => {
+  try {
+    const updatedUser = await User.updateOne({
+      _id: req.params.id
+    }, {
+      $set: {
+        name: req.body.name,
+        role: req.body.role,
+        hobbies: req.body.hobbies,
+        skills: req.body.skills
+      }
+    })
+    res.json(updatedUser)
+  } catch (err) {
+    res.json({
+      message: err
+    })
+  }
+})
 
 module.exports = router;
