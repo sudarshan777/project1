@@ -15,9 +15,9 @@ let userSchema = new Schema({
   password: {
     type: String,
   },
-  role: {
+  role: [{
     type: String,
-  },
+  }, ],
   hobbies: {
     type: Array,
   },
