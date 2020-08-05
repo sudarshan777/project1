@@ -91,6 +91,24 @@ router.get("/bookmarks/:id", async (req, res) => {
     res.statue(400).json("Error: " + error);
   }
 });
+// router.get("/isFollowing/:id", async (req, res) => {
+//   const userId = req.params.id;
+//   const followUserId = req.body.user;
+
+//   try {
+//     const user = await User.findById(userId)
+//       .select("following")
+//       .populate("following", "_id");
+//     const result = user.following.find(
+//       (u) => u._id.toString() === followUserId
+//     );
+//     if (result) {
+//       res.json("True");
+//     } else res.json("False");
+//   } catch (error) {
+//     res.statue(400).json("Error: " + error);
+//   }
+// });
 
 router.post("/:id/follow", async (req, res) => {
   const userId = req.params.id;
