@@ -13,13 +13,20 @@ let userSchema = new Schema(
     password: {
       type: String,
     },
-    role: [
-      {
-        type: String,
-      },
-    ],
-    hobbies: [{ type: String }],
-    ratings: { type: Number, max: 5, default: 0 },
+    role: {
+      type: String,
+    },
+    hobbies: {
+      type: Array,
+    },
+    skills: {
+      type: Array,
+    },
+    ratings: {
+      type: Number,
+      max: 5,
+      default: 0,
+    },
     bookmarks: [
       {
         type: Schema.Types.ObjectId,
@@ -29,10 +36,20 @@ let userSchema = new Schema(
       },
     ],
     following: [
-      { type: Schema.Types.ObjectId, ref: "User", required: true, default: [] },
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        default: [],
+      },
     ],
     followers: [
-      { type: Schema.Types.ObjectId, ref: "User", required: true, default: [] },
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        default: [],
+      },
     ],
   },
   {
@@ -43,5 +60,4 @@ let userSchema = new Schema(
 // Export the model
 
 const User = model("User", userSchema);
-
 module.exports = User;

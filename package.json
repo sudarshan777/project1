@@ -21,7 +21,7 @@
     "passport-facebook": "^3.0.0",
     "query-string": "^6.12.1"
   },
-  "engines":{
+  "engines": {
     "node": "12.16.1"
   }
 }
